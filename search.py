@@ -13,7 +13,7 @@ def remove_extra_data(text):
     return re.sub(removed_reg, "", text)
 
 
-def get_ipa(text):
+def parse_ipa(text):
     ipa_reg = r"(?P<ipa>\|\s英\s(\w+)\s\|)"
     ipa = re.search(ipa_reg, text, re.MULTILINE)
     try:
@@ -23,11 +23,17 @@ def get_ipa(text):
 
 
 def split_definition_and_examples(text):
+    # convert
     # 完全的，徹底的 ▸ A more complete study of the subject is needed. 對這個問題需要作更加徹底的研究。
+    # to
+    # ("完全的，徹底的", ()
+    #   "A more complete study of the subject is needed.",
+    #   "對這個問題需要作更加徹底的研究。"
+    # ))
     splitted_texts = text.split("▸")
     return (
         splitted_texts[0].strip(),
-        list(
+        tuple(
             map(
                 # split by chinese character
                 lambda x: list(re.split(r"\s(?=[\u4e00-\ufaff]+)", x.strip())),
@@ -38,7 +44,9 @@ def split_definition_and_examples(text):
 
 
 def split_list(text):
+    # split by definition index
     splitted_texts = re.split(r"(\s\d{1}\s)[^a-z]", text)
+    # filter out the definition that have no examples.
     splitted_texts = list(filter(lambda x: x.find("▸") > -1, splitted_texts))
     return list(map(split_definition_and_examples, splitted_texts))
 
@@ -48,13 +56,15 @@ def search(vocab):
     text = DCSCopyTextDefinition(None, vocab, wordrange)
     text = remove_extra_data(text)
     result = {}
+    # result["origin"] = text
+
     part_of_speech_reg = (
         r"\s((?:n\.|a\.|vt\.|vi\.|ad\.|int\.|prep\.|pron\.|art\.))\s(?:\(.*?\))?"
     )
-    # result["origin"] = text
 
-    sessions = [x for x in re.split(part_of_speech_reg, text)]
-    result["ipa"] = get_ipa(sessions[0])
+    sessions = re.split(part_of_speech_reg, text)
+    result["ipa"] = parse_ipa(sessions[0])
+
     # re"\d$" is used to to remove some vocab have more than 1 definition.
     # e.g. aged1, aged2
     result["title"] = re.sub(r"\d$", "", remove_ipa(sessions[0]).strip())
@@ -65,7 +75,5 @@ def search(vocab):
 
 
 if __name__ == "__main__":
-
-    # print(search("square")["origin"])
     print(search("square"))
 

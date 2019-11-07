@@ -5,7 +5,7 @@ def print_vocab(index, result, file=None):
     print("<tr class='post'>", file=file)
     print(f"<td id='{index}'>{index}</td>", file=file)
     print(
-        f"<td class='font-weight-bold' onclick='toggle_visibility(\"invisible-title-{index}\")' ><span class='invisible' id='invisible-title-{index}'>{result['title']}</span></td>",
+        f"<td class='font-weight-bold' onclick='toggle_visibility(this)' ><span class='invisible' id='invisible-title-{index}'>{result['title']}</span></td>",
         file=file,
     )
     print(f"<td><code>/{result['ipa']}/</code></td>", file=file)
@@ -24,7 +24,7 @@ def print_vocab(index, result, file=None):
 
             print(f"<td></td>", file=file)
             print(
-                f"<td onclick='toggle_visibility(\"invisible-{index}-{n}-{k}\")'><span id='invisible-{index}-{n}-{k}' class='invisible'>{left}</span></td>",
+                f"<td onclick='toggle_visibility(this)'><span id='invisible-{index}-{n}-{k}' class='invisible'>{left}</span></td>",
                 file=file,
             )
             print(f"<td>{right}</td>", file=file)
@@ -74,9 +74,8 @@ def bottom():
 </body>
 
 <script>
-  function toggle_visibility(index) {
-    var element = document.getElementById(index);
-    element.classList.toggle('invisible')
+  function toggle_visibility(e) {
+    e.firstChild.classList.toggle('invisible')
   }
   var infScroll = new InfiniteScroll('.content', {
     onInit: function () {
