@@ -2,9 +2,12 @@ import re
 import sys
 from DictionaryServices import DCSCopyTextDefinition
 
+special_words = {
+    'wound': "wound | 美 wund | | 英 wuːnd | n. [C] (plural wounds) 1 創傷，傷；傷口；傷疤 ▸ He had a bullet wound in his chest. 他胸部有槍傷。 2 (對感情，名譽等的) 傷害，創傷 ▸ That was a wound to the child's pride. 那是對孩子自尊心的傷害。 vt. (past wounded, pp wounded, present wounding) 使受傷；傷害 ▸ The shot wounded her left arm. 子彈打傷了她的左臂。 vi. (past wounded, pp wounded, present wounding) 打傷，傷害"
+}
 
 def remove_ipa(text):
-    ipa_reg = r"(\|\s[美|英]\s\w+\s\|)"
+    ipa_reg = r"(\|\s[美|英]\s.*?\s\|)"
     return re.sub(ipa_reg, "", text)
 
 
@@ -45,21 +48,24 @@ def split_definition_and_examples(text):
 
 def split_list(text):
     # split by definition index
-    splitted_texts = re.split(r"(\s\d{1}\s)[^a-z]", text)
+    splitted_texts = re.split(r"(\s\d{1}\s)(?=[^a-z])", text)
     # filter out the definition that have no examples.
     splitted_texts = list(filter(lambda x: x.find("▸") > -1, splitted_texts))
     return list(map(split_definition_and_examples, splitted_texts))
 
 
 def search(vocab):
-    wordrange = (0, len(vocab))
-    text = DCSCopyTextDefinition(None, vocab, wordrange)
-    text = remove_extra_data(text)
     result = {}
+    if vocab in special_words.keys():
+        text = special_words[vocab]
+    else:
+        wordrange = (0, len(vocab))
+        text = DCSCopyTextDefinition(None, vocab, wordrange)
     # result["origin"] = text
+    text = remove_extra_data(text)
 
     part_of_speech_reg = (
-        r"\s((?:n\.|a\.|vt\.|vi\.|ad\.|int\.|prep\.|pron\.|art\.))\s(?:\(.*?\))?"
+        r"\s((?:n\.|a\.|vt\.|vi\.|ad\.|int\.|prep\.|pron\.|art\.|v\.aux\.))\s(?:\(.*?\))?"
     )
 
     sessions = re.split(part_of_speech_reg, text)
@@ -75,5 +81,6 @@ def search(vocab):
 
 
 if __name__ == "__main__":
-    print(search("square"))
+    # print(search("complete")['origin'])
+    print(search("wound"))
 

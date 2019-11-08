@@ -11,4 +11,4 @@ if __name__ == "__main__":
         json_array.append(result)
 
     with open("./html/vocabs.json", "w", encoding="utf8") as f:
-        json.dump(json_array, f, indent=2)
+        json.dump(json_array, f)
