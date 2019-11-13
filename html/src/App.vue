@@ -1,15 +1,18 @@
 <template>
-  <div class="container-fluid lead">
-    <navbar></navbar>
-    <pagination v-show="!isShuffleMode" class="mt-2"></pagination>
-    <session v-for="word in words" :word="word" :key="word.id"></session>
-    <pagination v-show="!isShuffleMode"></pagination>
+  <div>
+    <setting />
+    <pagination v-show="!isShuffleMode" />
+
+    <div class="container">
+      <word v-for="word in words " :word="word" :key="word.id" />
+    </div>
+    <pagination v-show="!isShuffleMode" />
   </div>
 </template>
 
 <script>
-import Session from "@/components/Session.vue"
-import Navbar from "@/components/Navbar.vue"
+import Word from "@/components/Word.vue"
+import Setting from "@/components/Setting.vue"
 import Pagination from "@/components/Pagination.vue"
 
 import { mapState, mapActions } from "vuex"
@@ -18,11 +21,8 @@ export default {
   name: "app",
   components: {
     Pagination,
-    Navbar,
-    Session
-  },
-  data() {
-    return {}
+    Setting,
+    Word
   },
   computed: {
     ...mapState(["words", "library", "pageNo", "isShuffleMode"])

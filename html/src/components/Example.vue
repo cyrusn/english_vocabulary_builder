@@ -1,12 +1,14 @@
 <template>
   <div>
-    <div @click="toggle_show">
-      <span class="badge badge-success">例</span>
-      {{chi}}
-    </div>
-    <div v-show="show">
-      <span class="badge badge-warning">e.g.</span>
-      {{eng}}
+    <a class="panel-block" @click="toggle_show">
+      <span class="tag is-light is-success">例</span>
+      &nbsp;
+      <span class="is-italic">{{chi}}</span>
+    </a>
+    <div v-show="show" class="panel-block">
+      <span class="tag is-light is-warning">e.g.</span>
+      &nbsp;
+      <span class="is-italic">{{eng}}</span>
     </div>
   </div>
 </template>

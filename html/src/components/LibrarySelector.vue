@@ -1,26 +1,32 @@
 <template>
-  <div class="col-auto">
-    <div class="input-group p-2">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Library</span>
+  <div class="level-item">
+    <div class="field has-addons">
+      <p class="control">
+        <span class="button is-static">Library</span>
+      </p>
+      <div class="control">
+        <div class="select">
+          <select v-model="value" @change="onUpdate(value)">
+            <option disabled value>Please select one</option>
+            <option
+              v-for="(option, key) in options"
+              v-bind:value="option.value"
+              :key="key"
+            >{{ option.text }}</option>
+          </select>
+        </div>
       </div>
-      <select class="custom-select" v-model="value" @change="onUpdate(value)">
-        <option
-          v-for="(option, key) in options"
-          v-bind:value="option.value"
-          :key="key"
-        >{{ option.text }}</option>
-      </select>
     </div>
   </div>
 </template>
 
 <script>
-import { mapActions, mapMutations, mapState } from "vuex"
+import { mapActions, mapMutations, mapState, mapGetters } from "vuex"
 
 export default {
   data() {
     return {
+      value: "",
       options: [
         { text: "Basic", value: "basic.json" },
         { text: "Advance", value: "advance.json" },
@@ -29,15 +35,8 @@ export default {
     }
   },
   computed: {
-    ...mapState(["library"]),
-    value: {
-      get() {
-        return this.library
-      },
-      set(library) {
-        this.updateLibrary(library)
-      }
-    }
+    ...mapState(["library", "isShuffleMode"]),
+    ...mapGetters(["totalPages"])
   },
   methods: {
     ...mapActions(["updateLibrary"]),

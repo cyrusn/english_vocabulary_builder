@@ -1,23 +1,22 @@
 <template>
-  <div class="col-auto">
-    <div class="input-group p-2">
-      <div class="input-group-prepend">
-        <span class="input-group-text">Page No.</span>
-      </div>
+  <div class="field has-addons">
+    <p class="control" v-show="!isShuffleMode">
+      <span class="button is-static">Page</span>
+    </p>
+    <p class="control" v-show="!isShuffleMode">
       <input
         type="number"
         min="1"
-        :max="totalPage"
+        :max="totalPages"
         aria-label="Page No."
-        class="form-control"
-        v-model.number.lazy="localPageNo"
-        :class="invalid"
+        class="input"
+        placeholder="Page No"
+        v-model.number="localPageNo"
       />
-      <div class="input-group-append">
-        <span class="input-group-text">&nbsp;of {{totalPages}}</span>
-      </div>
-      <div class="invalid-feedback">Must be an positve interger less than total pages</div>
-    </div>
+    </p>
+    <p class="control" v-show="!isShuffleMode">
+      <span class="button is-static">/ {{totalPages}}</span>
+    </p>
   </div>
 </template>
 
@@ -25,27 +24,18 @@
 import { mapState, mapActions, mapGetters } from "vuex"
 
 export default {
-  data() {
-    return {
-      invalid: {
-        "is-invalid": false
-      }
-    }
-  },
   computed: {
-    ...mapState(["pageNo"]),
+    ...mapState(["pageNo", "isShuffleMode"]),
     ...mapGetters(["totalPages"]),
     localPageNo: {
       get() {
         return this.pageNo
       },
       set(n) {
-        const { totalPages, invalid, updatePageNo } = this
+        const { totalPages, updatePageNo } = this
         if (typeof n !== "number" || n < -1 || n > totalPages) {
-          invalid["is-invalid"] = true
           return
         }
-        invalid["is-invalid"] = false
         updatePageNo(n)
       }
     }

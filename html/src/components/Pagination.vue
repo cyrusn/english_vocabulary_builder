@@ -1,33 +1,33 @@
 <template>
-  <ul class="pagination pagination-sm justify-content-center">
-    <li class="page-item" @click="previous">
-      <a href="#" class="page-link">&laquo;</a>
-    </li>
-    <li class="page-item" v-show="pageNo > 3 " @click="updatePageNo(1)">
-      <a href="#" class="page-link">1</a>
-    </li>
-    <li class="page-item disabled" v-show="pageNo > 4">
-      <a href="#" class="page-link">...</a>
-    </li>
-    <li
-      class="page-item"
-      :class="{active: pageNo == i}"
-      v-for="i in range"
-      @click="updatePageNo(i)"
-      :key="i"
-    >
-      <a href="#" class="page-link">{{i}}</a>
-    </li>
-    <li class="page-item disabled" v-show="pageNo < (totalPages - 3)">
-      <a href="#" class="page-link">...</a>
-    </li>
-    <li class="page-item" v-show="pageNo < (totalPages - 2)" @click="updatePageNo(totalPages)">
-      <a href="#" class="page-link">{{totalPages}}</a>
-    </li>
-    <li class="page-item" @click="next">
-      <a href="#" class="page-link">&raquo;</a>
-    </li>
-  </ul>
+  <div class="box">
+    <div class="container">
+      <nav class="pagination is-small" role="navigation">
+        <ul class="pagination-list">
+          <li>
+            <a href="#" class="pagination-previous" @click="previous">&laquo;</a>
+          </li>
+          <li v-show="pageNo > 2 " @click="updatePageNo(1)">
+            <a class="pagination-link" href="#">1</a>
+          </li>
+          <li v-show="pageNo > 3">
+            <span class="pagination-ellipsis">&hellip;</span>
+          </li>
+          <li v-for="i in range" @click="updatePageNo(i)" :key="i">
+            <a class="pagination-link" :class="{'is-current': pageNo == i}" href="#">{{i}}</a>
+          </li>
+          <li v-show="pageNo < (totalPages - 2)">
+            <span class="pagination-ellipsis">&hellip;</span>
+          </li>
+          <li v-show="pageNo < (totalPages - 1)" @click="updatePageNo(totalPages)">
+            <a class="pagination-link" href="#">{{totalPages}}</a>
+          </li>
+          <li>
+            <a class="pagination-next" @click="next">&raquo;</a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -35,12 +35,11 @@ import { mapState, mapGetters, mapActions } from "vuex"
 export default {
   data() {
     return {
-      active: false,
-      width: 5
+      width: 3
     }
   },
   computed: {
-    ...mapState(["pageNo", "wordsPerPage", "libraryWordsLength"]),
+    ...mapState(["pageNo", "wordsPerPage"]),
     ...mapGetters(["totalPages"]),
     median() {
       const { width } = this

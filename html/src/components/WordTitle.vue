@@ -1,12 +1,10 @@
 <template>
-  <div class="card-title">
-    <h2>
-      <span @click="toggle_show" class="badge badge-info">{{id}}</span>
-      <span v-show="show" class>&nbsp;{{title}}</span>
-      <small>
-        <span class="font-weight-light text-danger">&nbsp;/{{ipa}}/</span>
-      </small>
-    </h2>
+  <div>
+    <div class="tags are-medium has-addons">
+      <a class="tag is-dark" @click="toggle_show">{{id}}</a>
+      <span class="tag is-light is-danger">/{{ipa}}/</span>
+    </div>
+    <h2 class="subtitle is-2 is-italic has-text-weight-semibold" v-show="show">{{title}}</h2>
   </div>
 </template>
 
