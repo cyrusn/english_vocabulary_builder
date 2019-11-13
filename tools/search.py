@@ -68,15 +68,15 @@ def search(vocab):
 
     part_of_speech_reg = r"\s((?:n\.|a\.|vt\.|vi\.|ad\.|int\.|prep\.|pron\.|art\.|conj\.|v\.aux\.))\s(?:\(.*?\))?"
 
-    sessions = re.split(part_of_speech_reg, text)
-    result["ipa"] = parse_ipa(sessions[0])
+    sections = re.split(part_of_speech_reg, text)
+    result["ipa"] = parse_ipa(sections[0])
 
     # re"\d$" is used to to remove some vocab have more than 1 definition.
     # e.g. aged1, aged2
-    result["title"] = re.sub(r"\d$", "", remove_ipa(sessions[0]).strip())
-    examples = list(map(split_list, sessions[2::2]))
-    zipped = list(zip(sessions[1::2], examples))
-    result["sessions"] = zipped
+    result["title"] = re.sub(r"\d$", "", remove_ipa(sections[0]).strip())
+    examples = list(map(split_list, sections[2::2]))
+    zipped = list(zip(sections[1::2], examples))
+    result["sections"] = zipped
     return result
 
 
