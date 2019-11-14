@@ -56,14 +56,16 @@ def split_list(text):
     return list(map(split_definition_and_examples, splitted_texts))
 
 
-def search(vocab):
+def search(vocab, show_origin=False):
     result = {}
     if vocab in special_words.keys():
         text = special_words[vocab]
     else:
         wordrange = (0, len(vocab))
         text = DCSCopyTextDefinition(None, vocab, wordrange)
-    # result["origin"] = text
+    if show_origin:
+        result["origin"] = text
+
     text = remove_extra_data(text)
 
     part_of_speech_reg = r"\s((?:n\.|a\.|vt\.|vi\.|ad\.|int\.|prep\.|pron\.|art\.|conj\.|v\.aux\.))\s(?:\(.*?\))?"
@@ -74,13 +76,28 @@ def search(vocab):
     # re"\d$" is used to to remove some vocab have more than 1 definition.
     # e.g. aged1, aged2
     result["title"] = re.sub(r"\d$", "", remove_ipa(sections[0]).strip())
-    examples = list(map(split_list, sections[2::2]))
+    examples = [re.sub(r"^\d\s", "", x) for x in sections[2::2]]
+    examples = list(map(split_list, examples))
     zipped = list(zip(sections[1::2], examples))
     result["sections"] = zipped
     return result
 
 
 if __name__ == "__main__":
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser()
+
+    parser.add_argument("word", type=str, help="a word to search", default="hello")
+    parser.add_argument(
+        "-o",
+        "--show_origin",
+        help="show original text",
+        default=False,
+        action="store_true",
+    )
+    args = parser.parse_args()
+
     # print(search("complete")['origin'])
-    print(search("wound"))
+    print(search(args.word, args.show_origin))
 
